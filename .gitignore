@@ -1,2 +1,31 @@
+# Maven target directory
+/target/
+
+# Eclipse project files
+/.classpath
+/.project
+/.settings/
+
+# IntelliJ IDEA project files
+/.idea/
+/*.iml
+/out/
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Java-specific
+*.class
+
+# Ignore config.properties (sensitive data)
 src/main/resources/dbModule/config.properties
-dependency-reduced-pom.xml
+
+# Environment or local config files
+.env
