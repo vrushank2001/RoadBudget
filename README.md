@@ -47,10 +47,10 @@ mvn clean install
 Create a file at:
 
 ```
-src/main/java/dbModule/config.properties
+src/main/resources/dbModule/config.properties
 ```
 
-And add the following content (replace with your MySQL credentials):
+And add the following content (replace with your MySQL credentials) or follow instructions of `config.properties.sample` in `src/main/java/dbModule`:
 
 ```properties
 db.url=jdbc:mysql://localhost:3306/
