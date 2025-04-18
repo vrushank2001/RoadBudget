@@ -21,11 +21,11 @@
 ```
 RoadBudget/
 ├── dbModule/               # Database setup and operations
-├── ui/                    # Swing-based user interface
+├── ui/                     # Swing-based user interface
 ├── models/                 # Data models (e.g., ExpenseRecord, Car)
 ├── utils/                  # Security (password hashing, salting)
 ├── config.properties       # DB config (username, password, etc.)
-└── MainPage.java               # App entry point
+└── MainPage.java           # App entry point
 ```
 
 ---
