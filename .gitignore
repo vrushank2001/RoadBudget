@@ -1,2 +1,2 @@
-src/dbModule/config.properties
+src/main/java/dbModule/config.properties
 dependency-reduced-pom.xml
