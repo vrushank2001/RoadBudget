@@ -7,6 +7,8 @@ import dbModule.DBOperations;
 import utilitiesModule.SecurityUtils;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class MainPage extends JFrame {
 
@@ -96,6 +98,9 @@ public class MainPage extends JFrame {
 	            passwordField.setEchoChar('*');
 	        }
 	    });
+
+	    // Enter key to login
+	    getRootPane().setDefaultButton(loginButton);
 	    
 	    loginButton.addActionListener(e -> {
 	        String username = usernameField.getText();
@@ -181,6 +186,14 @@ public class MainPage extends JFrame {
 	            confirmPasswordField.setEchoChar('*');
 	        }
 	    });
+	    
+	    // Enter key to register
+	    registerDialog.getRootPane().setDefaultButton(registerBtn);
+	    
+	    // Close dialog on ESC key
+	    registerDialog.getRootPane().registerKeyboardAction(e -> registerDialog.dispose(),
+	        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+	        JComponent.WHEN_IN_FOCUSED_WINDOW);
 	    
 	    // Register logic
 	    registerBtn.addActionListener(event -> {
