@@ -36,12 +36,18 @@ git clone https://github.com/vrushank2001/RoadBudget.git
 cd RoadBudget
 ```
 
-### 2. Configure Database Connection
+### 2. Build the Project
+
+```bash
+mvn clean install
+```
+
+### 3. Configure Database Connection
 
 Create a file at:
 
 ```
-src/dbModule/config.properties
+src/main/java/dbModule/config.properties
 ```
 
 And add the following content (replace with your MySQL credentials):
@@ -52,7 +58,7 @@ db.username=your_mysql_username
 db.password=your_mysql_password
 ```
 
-### 3. Set Up the Database
+### 4. Set Up the Database
 
 Create database named `RoadBudget` in `MySQL` using `CREATE DATABASE ROADBUDGET`.
 Run the `DBSetup` class in the `dbModule` package to create required tables:
@@ -61,11 +67,6 @@ Run the `DBSetup` class in the `dbModule` package to create required tables:
 mvn exec:java -Dexec.mainClass="dbModule.DBSetup"
 ```
 
-### 4. Build the Project
-
-```bash
-mvn clean install
-```
 
 ### 5. Run the Application
 
