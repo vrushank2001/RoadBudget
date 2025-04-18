@@ -13,6 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="lib" path="D:/Vrushank Career/Github Repos/RoadBudget/lib/mysql-connector-j-8.3.0/mysql-connector-j-8.3.0.jar"/>
 	<classpathentry kind="lib" path="D:/Vrushank Career/Github Repos/RoadBudget/lib/jcalendar-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
