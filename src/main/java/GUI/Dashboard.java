@@ -18,7 +18,8 @@ public class Dashboard extends JFrame {
     private JComboBox<Object> carDropdown;
     private JTable expenseTable;
     private DefaultTableModel tableModel;
-    private JLabel totalLabel;
+    private JLabel grandTotalOfUser;
+    private JLabel totalExpensesOnTableLabel;
     private String ownerUsername;
     private List<Car> userCars;
 
@@ -58,17 +59,57 @@ public class Dashboard extends JFrame {
         expenseTable = new JTable(tableModel);
 
         JPanel bottomPanel = new JPanel(new FlowLayout());
-        totalLabel = new JLabel("Total: $0.0");
+        grandTotalOfUser = new JLabel("Grand Total Of " + ownerUsername + ": $0.0");
+        totalExpensesOnTableLabel = new JLabel("Total Expenses on Table: $0.0");
+        
+        grandTotalOfUser.setFont(grandTotalOfUser.getFont().deriveFont(15.0f));
+		totalExpensesOnTableLabel.setFont(totalExpensesOnTableLabel.getFont().deriveFont(15.0f));
         JButton logoutButton = new JButton("Logout");
         
-        bottomPanel.add(totalLabel);
+        bottomPanel.add(grandTotalOfUser);
+		bottomPanel.add(totalExpensesOnTableLabel);
         bottomPanel.add(logoutButton);
         
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new MainPage().setVisible(true);
-            	dispose();
+            	
+            	int confirmation = JOptionPane.showConfirmDialog(
+            	        logoutButton,
+            	        "Are you sure you want to logout?",
+            	        "Logout",
+            	        JOptionPane.YES_NO_OPTION
+            	    );
+
+            	    if (confirmation == JOptionPane.NO_OPTION) return;
+
+            	    // Create a non-blocking dialog
+            	    JDialog dialog = new JDialog();
+            	    dialog.setSize(200, 100);
+            	    dialog.setTitle("Logging out");
+            	    dialog.setModal(false);
+            	    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            	    dialog.setLayout(new BorderLayout());
+            	    //set label to the center of the dialog both horizontally and vertically
+            	    
+            	    JLabel label = new JLabel("Logging out...");
+				    label.setFont(label.getFont().deriveFont(15.0f));
+				    label.setHorizontalAlignment(JLabel.CENTER);
+				    label.setVerticalAlignment(JLabel.CENTER);
+				    dialog.add(label, BorderLayout.CENTER);
+				    
+            	    dialog.setLocationRelativeTo(null); // center on the button or frame
+            	    dialog.setVisible(true);
+
+            	    // Set a timer to close the dialog after 3 seconds and perform logout
+            	    Timer timer = new Timer(2000, evt -> {
+            	        dialog.dispose();
+            	        new MainPage().setVisible(true);
+            	        dispose(); // dispose the current frame
+            	    });
+            	    
+            	    timer.setRepeats(false); // Important: only run once!
+            	    timer.start();
             }
         });
 
@@ -81,6 +122,14 @@ public class Dashboard extends JFrame {
         setVisible(true);
     }
 
+    private double totalExpensesOnTable() {
+    	double total = 0.0;
+    	for (int i = 0; i < tableModel.getRowCount(); i++) {
+			total += Double.parseDouble(tableModel.getValueAt(i, 2).toString());
+		}
+		return total;
+    }
+    
     private void loadExpenses() {
         tableModel.setRowCount(0);
         Object selected = carDropdown.getSelectedItem();
@@ -91,8 +140,10 @@ public class Dashboard extends JFrame {
         List<ExpenseRecord> expenses = DBOperations.getExpensesForUser(ownerUsername, filterCarId);
         for (ExpenseRecord e : expenses) {
             tableModel.addRow(new Object[]{e.getId(), e.getType(), e.getAmount(), e.getDate(), e.getDescription(), e.getCarName()});
-        } 
-        totalLabel.setText("Total: $" + DBOperations.getTotalExpensesForUser(ownerUsername));
+        }
+        
+		totalExpensesOnTableLabel.setText("Total Expenses on Table: $" + totalExpensesOnTable());
+        grandTotalOfUser.setText("Grand Total Of " + ownerUsername + ": $" + DBOperations.getTotalExpensesForUser(ownerUsername));
     }
 
     private void openAddCarDialog() {
@@ -123,7 +174,7 @@ public class Dashboard extends JFrame {
 
     private void openAddExpenseDialog() {
         JPanel panel = new JPanel(new GridLayout(5, 2));
-        String[] types = {"Fuel", "Repair", "Insurance", "Other"};
+        String[] types = {"Fuel", "Car Insurance", "Tenant Insurance", "Maintanence", "Other"};
         JComboBox<String> typeBox = new JComboBox<>(types);
         JTextField descriptionField = new JTextField();
         JTextField amountField = new JTextField();

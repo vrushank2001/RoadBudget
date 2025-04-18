@@ -23,7 +23,7 @@ public class DBSetup {
 
     private static final String CREATE_EXPENSES_TABLE_SQL = "CREATE TABLE IF NOT EXISTS Expenses ("
             + "expenseId INT AUTO_INCREMENT PRIMARY KEY,"
-            + "expenseType ENUM('Fuel', 'Maintenance', 'Insurance', 'Other') NOT NULL,"
+            + "expenseType ENUM('Fuel', 'Maintenance', 'Car Insurance', 'Tenant Insurance', 'Other') NOT NULL,"
 			+ "amount DECIMAL(10, 2) NOT NULL,"
 			+ "date DATE NOT NULL,"
             + "description VARCHAR(255),"
