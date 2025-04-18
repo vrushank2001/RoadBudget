@@ -7,7 +7,7 @@ import java.util.*;
 
 public class DBConnector {
 	
-	private static final String CONFIG_FILE_PATH = "src/dbModule/config.properties";
+	private static final String CONFIG_FILE_PATH = "src/main/java/dbModule/config.properties";
 
     public static Connection getConnection() throws SQLException {
     	Properties properties = loadConfig();
