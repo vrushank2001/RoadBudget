@@ -2,6 +2,7 @@ package GUI;
 
 import dbModule.DBOperations;
 import models.ExpenseRecord;
+import models.ExpenseRecord.ExpenseType;
 import models.Car;
 
 import javax.swing.*;
@@ -62,12 +63,17 @@ public class Dashboard extends JFrame {
         grandTotalOfUser = new JLabel("Grand Total Of " + ownerUsername + ": $0.0");
         totalExpensesOnTableLabel = new JLabel("Total Expenses on Table: $0.0");
         
+        JButton filterButton = new JButton("Filter");
+        filterButton.addActionListener(e -> showFilterDialog());
+       
+        
         grandTotalOfUser.setFont(grandTotalOfUser.getFont().deriveFont(15.0f));
 		totalExpensesOnTableLabel.setFont(totalExpensesOnTableLabel.getFont().deriveFont(15.0f));
         JButton logoutButton = new JButton("Logout");
         
         bottomPanel.add(grandTotalOfUser);
 		bottomPanel.add(totalExpensesOnTableLabel);
+		bottomPanel.add(filterButton);
         bottomPanel.add(logoutButton);
         
         logoutButton.addActionListener(new ActionListener() {
@@ -82,6 +88,7 @@ public class Dashboard extends JFrame {
             	    );
 
             	    if (confirmation == JOptionPane.NO_OPTION) return;
+            	    if (confirmation == JOptionPane.CLOSED_OPTION) return;
 
             	    // Create a non-blocking dialog
             	    JDialog dialog = new JDialog();
@@ -122,6 +129,7 @@ public class Dashboard extends JFrame {
         setVisible(true);
     }
 
+
     private double totalExpensesOnTable() {
     	double total = 0.0;
     	for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -143,7 +151,7 @@ public class Dashboard extends JFrame {
         }
         
 		totalExpensesOnTableLabel.setText("Total Expenses on Table: $" + totalExpensesOnTable());
-        grandTotalOfUser.setText("Grand Total Of " + ownerUsername + ": $" + DBOperations.getTotalExpensesForUser(ownerUsername));
+        grandTotalOfUser.setText("Grand Total Of " + ownerUsername + ": $" + DBOperations.getTotalExpensesAmountForUser(ownerUsername));
     }
 
     private void openAddCarDialog() {
@@ -174,7 +182,7 @@ public class Dashboard extends JFrame {
 
     private void openAddExpenseDialog() {
         JPanel panel = new JPanel(new GridLayout(5, 2));
-        String[] types = {"Fuel", "Car Insurance", "Tenant Insurance", "Maintanence", "Other"};
+        String[] types = ExpenseRecord.ExpenseType.getAllTypes();
         JComboBox<String> typeBox = new JComboBox<>(types);
         JTextField descriptionField = new JTextField();
         JTextField amountField = new JTextField();
@@ -192,7 +200,7 @@ public class Dashboard extends JFrame {
         int result = JOptionPane.showConfirmDialog(this, panel, "Add Expense", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             try {
-                String type = (String) typeBox.getSelectedItem();
+                ExpenseType type = ExpenseType.fromDisplayName((String) typeBox.getSelectedItem());
                 String desc = descriptionField.getText();
                 
                 //round to 2 decimal places
@@ -207,7 +215,7 @@ public class Dashboard extends JFrame {
                 DBOperations.insertExpense(record, ownerUsername);
                 loadExpenses();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Invalid input.");
+                JOptionPane.showMessageDialog(this, "Invalid input." + ex);
             }
         }
     }
@@ -226,6 +234,21 @@ public class Dashboard extends JFrame {
 	    	JOptionPane.showMessageDialog(this, "Please select an expense to delete from the table.");
 	    }
     }
+    
+    private void showFilterDialog() {
+    	new FilterDialog(ownerUsername, this);
+    }
+     
+    
+    void updateExpenseTable(List<ExpenseRecord> expenses) {
+		tableModel.setRowCount(0);
+		for (ExpenseRecord e : expenses) {
+            tableModel.addRow(new Object[]{e.getId(), e.getType(), e.getAmount(), e.getDate(), e.getDescription(), e.getCarName()});
+        }
+		
+		totalExpensesOnTableLabel.setText("Total Expenses on Table: $" + totalExpensesOnTable());
+		grandTotalOfUser.setText("Grand Total Of " + ownerUsername + ": $" + DBOperations.getTotalExpensesAmountForUser(ownerUsername));
+	}
     
     public static void main(String[] args) {
     	// Create instance of MainPage to start the application

@@ -9,6 +9,7 @@ import java.util.List;
 
 import models.Car;
 import models.ExpenseRecord;
+import models.ExpenseRecord.ExpenseType;
 import utilitiesModule.SecurityUtils;
 
 
@@ -89,7 +90,7 @@ public class DBOperations {
     public static void insertExpense(ExpenseRecord record, String ownerUsername) {
         try (Connection conn = DBConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement("INSERT INTO Expenses (expenseType, description, amount, date, carId, owner) VALUES (?, ?, ?, ?, ?, ?)");) {
-            stmt.setString(1, record.getType());
+            stmt.setString(1, record.getType().toString());
             stmt.setString(2, record.getDescription());
             stmt.setDouble(3, record.getAmount());
             stmt.setDate(4, new java.sql.Date(record.getDate().getTime()));
@@ -142,7 +143,7 @@ public class DBOperations {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ExpenseRecord record = new ExpenseRecord(
-                        rs.getString("expenseType"),
+                        ExpenseType.fromDisplayName(rs.getString("expenseType")),
                         rs.getString("description"),
                         rs.getDouble("amount"),
                         rs.getDate("date")
@@ -159,7 +160,7 @@ public class DBOperations {
         return records;
     }
 
-    public static double getTotalExpensesForUser(String username) {
+    public static double getTotalExpensesAmountForUser(String username) {
         try (Connection conn = DBConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement("SELECT SUM(amount) FROM Expenses e JOIN Cars c ON e.carId = c.carId WHERE c.owner = ?")) {
             stmt.setString(1, username);
