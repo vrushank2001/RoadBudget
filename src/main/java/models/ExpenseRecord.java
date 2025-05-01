@@ -8,7 +8,7 @@ public class ExpenseRecord {
 	public enum ExpenseType {
 		
 		FUEL("Fuel"),
-		MAINTANENCE("Maintanence"),
+		MAINTENANCE("Maintenance"),
 		CAR_INSURANCE("Car Insurance"),
 		TENANT_INSURANCE("Tenant Insurance"),
 		OTHER("Other");

@@ -86,6 +86,20 @@ public class MainPage extends JFrame {
 	    buttonPanel.add(loginButton);
 	    buttonPanel.add(registerButton);
 	    formPanel.add(buttonPanel, gbc);
+	    
+	    // Forgot password label as a clickable link
+	    gbc.gridy = 4;
+	    JLabel forgotPasswordLabel = new JLabel("<html><u>Forgot Password?</u></html>");
+	    forgotPasswordLabel.setForeground(Color.BLUE);
+	    forgotPasswordLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	    formPanel.add(forgotPasswordLabel, gbc);
+
+	    // Open forgot password dialog
+	    forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+	    	public void mouseClicked(java.awt.event.MouseEvent e) {
+	    		new ForgotPasswordDialog(MainPage.this).setVisible(true);
+	    		}
+	    	});
 
 	    mainPanel.add(formPanel, BorderLayout.CENTER);
 

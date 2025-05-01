@@ -12,6 +12,7 @@ public class DBSetup {
 
     private static final String CREATE_ACCOUNTS_TABLE_SQL = "CREATE TABLE IF NOT EXISTS Accounts ("
             + "username VARCHAR(255) PRIMARY KEY,"
+			+ "email VARCHAR(255) NOT NULL UNIQUE,"
             + "password VARCHAR(255) NOT NULL,"
             + "salt VARCHAR(255) NOT NULL)";
 

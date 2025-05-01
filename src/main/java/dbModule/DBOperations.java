@@ -16,14 +16,15 @@ import utilitiesModule.SecurityUtils;
 public class DBOperations {
 	
 	
-	public static void insertAccount(String username, String password, String salt) {
+	public static void insertAccount(String username, String password, String salt, String email) {
 	    try (Connection connection = DBConnector.getConnection();
 	         PreparedStatement preparedStatement = connection.prepareStatement(
-	                 "INSERT INTO Accounts (username, password, salt) VALUES (?, ?, ?)")) {
+	                 "INSERT INTO Accounts (username, password, salt, email) VALUES (?, ?, ?, ?)")) {
 
 	        preparedStatement.setString(1, username);
 	        preparedStatement.setString(2, password);
 	        preparedStatement.setString(3, salt);
+	        preparedStatement.setString(4, email);
 	        preparedStatement.executeUpdate();
 
 	    } catch (SQLException e) {
@@ -54,16 +55,61 @@ public class DBOperations {
         return false; // authentication failed
     }
 	
-	public static boolean userExists(String username) {
+	public static boolean userExists(String usernameOrEmail) {
 	    try (Connection connection = DBConnector.getConnection();
-	         PreparedStatement statement = connection.prepareStatement("SELECT username FROM Accounts WHERE username = ?")) {
-	        statement.setString(1, username);
+	         PreparedStatement statement = connection.prepareStatement("SELECT username FROM Accounts WHERE username = ? OR email = ?")) {
+	        statement.setString(1, usernameOrEmail);
+	        statement.setString(2, usernameOrEmail);
 	        ResultSet rs = statement.executeQuery();
 	        return rs.next();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        return false;
 	    }
+	}
+	
+	public static boolean emailExists(String email) {
+		try (Connection connection = DBConnector.getConnection();
+			 PreparedStatement statement = connection.prepareStatement("SELECT email FROM Accounts WHERE email = ?")) {
+			statement.setString(1, email);
+			ResultSet rs = statement.executeQuery();
+			return rs.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static String getUserEmail(String usernameOrEmail) {
+		try (Connection connection = DBConnector.getConnection();
+			 PreparedStatement statement = connection.prepareStatement("SELECT email FROM Accounts WHERE username = ? OR email = ?")) {
+			statement.setString(1, usernameOrEmail);
+			statement.setString(2, usernameOrEmail);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return rs.getString("email");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static boolean updateUserPassword(String emailOrUsername, String hashedPassword, String salt) {
+		try (Connection connection = DBConnector.getConnection();
+			 PreparedStatement statement = connection.prepareStatement("UPDATE Accounts SET password = ?, salt = ? WHERE email = ? OR username = ?")) {
+			statement.setString(1, hashedPassword);
+			statement.setString(2, salt);
+			statement.setString(3, emailOrUsername);
+			statement.setString(4, emailOrUsername);
+			statement.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
 	}
 	
 	public static void insertCar(String carName, String ownerUsername) {

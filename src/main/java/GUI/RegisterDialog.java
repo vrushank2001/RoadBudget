@@ -77,19 +77,28 @@ public class RegisterDialog extends JDialog {
 	    JPasswordField confirmPasswordField = new JPasswordField(15);
 	    registerDialog.add(confirmPasswordField, gbc);
 
+	    gbc.gridx = 0;
+	    gbc.gridy = 3;
+	    registerDialog.add(new JLabel("Email:"), gbc);
+	    
+	    gbc.gridx = 1;
+	    JTextField emailField = new JTextField(15);
+	    registerDialog.add(emailField, gbc);
+	    
 	    //Show Password CheckBox
 	    gbc.gridx = 1;
-	    gbc.gridy = 3;
+	    gbc.gridy = 4;
 	    JCheckBox showPasswordCheckBox = new JCheckBox("Show Password");
 	    registerDialog.add(showPasswordCheckBox, gbc);
 	    
 	    // Register Button
 	    gbc.gridx = 1;
-	    gbc.gridy = 4;
+	    gbc.gridy = 5;
 	    gbc.anchor = GridBagConstraints.CENTER;
 	    JButton registerBtn = new JButton("Register");
 	    registerDialog.add(registerBtn, gbc);
 
+	   
 	    // Show/hide password feature
 	    showPasswordCheckBox.addActionListener(e -> {
 	        if (showPasswordCheckBox.isSelected()) {
@@ -114,21 +123,22 @@ public class RegisterDialog extends JDialog {
 	        String username = usernameField.getText();
 	        String password = new String(passwordField.getPassword());
 	        String confirmPassword = new String(confirmPasswordField.getPassword());
+	        String email = emailField.getText();
 
-	        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+	        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || emailField.getText().isEmpty()) {
 	            JOptionPane.showMessageDialog(registerDialog, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	        } else if (!password.equals(confirmPassword)) {
 	            JOptionPane.showMessageDialog(registerDialog, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
 	        } else {
-	            if (DBOperations.userExists(username)) {
-	                JOptionPane.showMessageDialog(registerDialog, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
+	            if (DBOperations.userExists(username) || DBOperations.emailExists(emailField.getText())) {
+	                JOptionPane.showMessageDialog(registerDialog, "Username or email already exists.", "Error", JOptionPane.ERROR_MESSAGE);
 	                return;
 	            }
 
 	            String salt = SecurityUtils.getSalt();
 	            String hashedPassword = SecurityUtils.hashPassword(password, salt);
 
-	            DBOperations.insertAccount(username, hashedPassword, salt);
+	            DBOperations.insertAccount(username, hashedPassword, salt, email);
 	            JOptionPane.showMessageDialog(registerDialog, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 	            registerDialog.dispose();
 	        }
