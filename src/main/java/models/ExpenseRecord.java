@@ -10,7 +10,6 @@ public class ExpenseRecord {
 		FUEL("Fuel"),
 		MAINTENANCE("Maintenance"),
 		CAR_INSURANCE("Car Insurance"),
-		TENANT_INSURANCE("Tenant Insurance"),
 		OTHER("Other");
 
 		private final String type;
