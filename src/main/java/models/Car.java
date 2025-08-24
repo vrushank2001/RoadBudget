@@ -15,6 +15,19 @@ public class Car {
 	public void setCarId(int carId) { this.carId = carId; }
 	public void setCarName(String carName) { this.carName = carName; }
 
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return carId == car.carId && carName.equals(car.carName); // equality by carId and carName
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(carId);
+    }
+    
     @Override
     public String toString() {
         return carName;

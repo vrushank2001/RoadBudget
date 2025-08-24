@@ -172,11 +172,12 @@ public class Dashboard extends JFrame {
 			if (result == JOptionPane.YES_OPTION) {
 				DBOperations.deleteCar(((Car) selected).getCarId());
 				carDropdown.removeItem(selected);
+				userCars.remove((Car) selected);
 				loadExpenses();
 			}
-			else {
-				JOptionPane.showMessageDialog(this, "Select car to delete from the dropdown.");
-			}
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "Select car to delete from the dropdown.");
 		}
 	}
 
